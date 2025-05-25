@@ -1,5 +1,6 @@
 package com.example.rebookbookservice.model.entity;
 
+import com.example.rebookbookservice.model.BookRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +10,6 @@ import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter
@@ -49,4 +49,16 @@ public class Book {
 
     @Column(nullable = false)
     private Integer price;
+
+    public Book(BookRequest title, String category, LocalDate publishedDate) {
+        this.title = title.getTitle();
+        this.author = title.getAuthor();
+        this.publisher = title.getPublisher();
+        this.publishedDate = publishedDate;
+        this.isbn = title.getIsbn();
+        this.description = title.getDescription();
+        this.cover = title.getCover();
+        this.category = category;
+        this.price = title.getPrice() != null ? title.getPrice() : 0;
+    }
 }

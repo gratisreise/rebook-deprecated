@@ -14,6 +14,9 @@ java {
         languageVersion = JavaLanguageVersion.of(17) // 자바 17 사용
     }
 }
+configurations.configureEach {
+    exclude group: 'commons-logging', module: 'commons-logging'
+}
 
 configurations {
     compileOnly {
@@ -60,6 +63,9 @@ dependencies {
 // ===== s3 ====
     implementation platform('software.amazon.awssdk:bom:2.27.21') // 최신 버전은 Maven Central에서 확인
     implementation 'software.amazon.awssdk:s3'
+
+// ===== gemini ====
+    implementation 'com.google.genai:google-genai:1.0.0'
 
 // ====== 개발 편의성 ======
     compileOnly 'org.projectlombok:lombok' // Lombok (컴파일 시에만 필요)

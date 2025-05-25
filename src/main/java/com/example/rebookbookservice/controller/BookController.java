@@ -1,11 +1,15 @@
 package com.example.rebookbookservice.controller;
 
+import com.example.rebookbookservice.common.CommonResult;
 import com.example.rebookbookservice.common.ResponseService;
 import com.example.rebookbookservice.common.SingleResult;
+import com.example.rebookbookservice.model.BookRequest;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
 import com.example.rebookbookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +22,13 @@ public class BookController {
 
     @GetMapping("/external/search")
     public SingleResult<NaverBooksResponse> externalSearch(@RequestParam String keyword) {
-        return ResponseService.getSingleResult(bookService.getNaverBooks(keyword));
+        return ResponseService.getSingleResult(bookService.searchNaverBooks(keyword));
+    }
+
+    @PostMapping
+    public CommonResult postBook(@RequestBody BookRequest request) {
+        bookService.postBook(request);
+        return ResponseService.getSuccessResult();
     }
 
 }

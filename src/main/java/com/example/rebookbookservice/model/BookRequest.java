@@ -1,19 +1,17 @@
-package com.example.rebookbookservice.model.naver;
+package com.example.rebookbookservice.model;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Item {
+public class BookRequest {
     private String title;
-    private String link;
     private String author;
-    private String image;
-    private String price;
-    private int discount;
     private String publisher;
-    private String pubdate;
     private String isbn;
     private String description;
+    private Integer price;
+    private String publishedDate;
+    private String cover;
 }
