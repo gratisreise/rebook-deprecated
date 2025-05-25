@@ -4,9 +4,14 @@ import com.example.rebookbookservice.common.CommonResult;
 import com.example.rebookbookservice.common.ResponseService;
 import com.example.rebookbookservice.common.SingleResult;
 import com.example.rebookbookservice.model.BookRequest;
+import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
 import com.example.rebookbookservice.service.BookService;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +34,11 @@ public class BookController {
     public CommonResult postBook(@RequestBody BookRequest request) {
         bookService.postBook(request);
         return ResponseService.getSuccessResult();
+    }
+
+    @GetMapping("/search")
+    public SingleResult<Page<Book>> search(@RequestParam String keyword, @PageableDefault Pageable pageable) {
+        return ResponseService.getSingleResult(bookService.searchBooks(keyword, pageable));
     }
 
 }
