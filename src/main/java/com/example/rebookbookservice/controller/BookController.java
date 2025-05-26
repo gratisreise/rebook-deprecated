@@ -7,17 +7,22 @@ import com.example.rebookbookservice.model.BookRequest;
 import com.example.rebookbookservice.model.PageResponse;
 import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
+import com.example.rebookbookservice.service.BookMarkService;
+import com.example.rebookbookservice.service.BookReviewService;
 import com.example.rebookbookservice.service.BookService;
 
+import java.net.CookieManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/books")
 public class BookController {
     private final BookService bookService;
+    private final BookMarkService bookMarkService;
+    private final BookReviewService bookReviewService;
 
     @GetMapping("/external/search")
     public SingleResult<NaverBooksResponse> externalSearch(@RequestParam String keyword) {
@@ -50,6 +57,13 @@ public class BookController {
     @GetMapping("/{bookId}")
     public SingleResult<Book> getBook(@PathVariable Long bookId) {
         return ResponseService.getSingleResult(bookService.getBook(bookId));
+    }
+
+    //@RequestHeader("X-User-Id") String userId
+    @PatchMapping("/{bookId}/marks")
+    public CommonResult bookMarking(@RequestParam String userId, @PathVariable Long bookId) {
+        bookMarkService.bookMarking(userId, bookId);
+        return ResponseService.getSuccessResult();
     }
 
 

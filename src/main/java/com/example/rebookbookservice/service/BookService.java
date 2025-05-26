@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookService {
     private final BookRepository bookRepository;
     private final ApiService apiService;
@@ -32,15 +33,15 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    @Transactional(readOnly = true)
+
     public PageResponse<Book> searchBooks(String keyword, Pageable pageable) {
         Page<Book> books = bookRepository.findByTitleContaining(keyword, pageable);
         return new PageResponse<>(books);
-
     }
 
     public Book getBook(Long bookId) {
         return bookRepository.findById(bookId)
             .orElseThrow(CMissingDataException::new);
     }
+
 }

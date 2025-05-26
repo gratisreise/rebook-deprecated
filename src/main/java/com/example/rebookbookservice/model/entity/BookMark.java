@@ -3,6 +3,7 @@ package com.example.rebookbookservice.model.entity;
 import com.example.rebookbookservice.model.entity.compositekey.BookMarkId;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class BookMark {
     @EmbeddedId
     BookMarkId bookMarkId;
