@@ -1,6 +1,8 @@
 package com.example.rebookbookservice.service;
 
+import com.example.rebookbookservice.exception.CMissingDataException;
 import com.example.rebookbookservice.model.BookRequest;
+import com.example.rebookbookservice.model.PageResponse;
 import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
 import com.example.rebookbookservice.repository.BookRepository;
@@ -30,8 +32,15 @@ public class BookService {
         bookRepository.save(book);
     }
 
+    @Transactional(readOnly = true)
+    public PageResponse<Book> searchBooks(String keyword, Pageable pageable) {
+        Page<Book> books = bookRepository.findByTitleContaining(keyword, pageable);
+        return new PageResponse<>(books);
 
-    public Page<Book> searchBooks(String keyword, Pageable pageable) {
-        return bookRepository.findByTitle(keyword, pageable);
+    }
+
+    public Book getBook(Long bookId) {
+        return bookRepository.findById(bookId)
+            .orElseThrow(CMissingDataException::new);
     }
 }
