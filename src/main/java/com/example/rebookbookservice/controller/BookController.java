@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/books")
 public class BookController {
     private final BookService bookService;
-    private final BookMarkService bookMarkService;
-    private final BookReviewService bookReviewService;
 
     @GetMapping("/external/search")
     public SingleResult<NaverBooksResponse> externalSearch(@RequestParam String keyword) {
@@ -59,12 +57,7 @@ public class BookController {
         return ResponseService.getSingleResult(bookService.getBook(bookId));
     }
 
-    //@RequestHeader("X-User-Id") String userId
-    @PatchMapping("/{bookId}/marks")
-    public CommonResult bookMarking(@RequestParam String userId, @PathVariable Long bookId) {
-        bookMarkService.bookMarking(userId, bookId);
-        return ResponseService.getSuccessResult();
-    }
+
 
 
 }

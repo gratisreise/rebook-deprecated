@@ -13,8 +13,12 @@ public class BookMarkService {
     private final BookMarkRepository bookMarkRepository;
 
     @Transactional
-    public void bookMarking(String userId, Long bookId) {
+    public void markingToggle(String userId, Long bookId) {
         BookMarkId bookMarkId = new BookMarkId(bookId, userId);
-        bookMarkRepository.save(new BookMark(bookMarkId));
+        if (bookMarkRepository.existsById(bookMarkId)) {
+            bookMarkRepository.deleteById(bookMarkId);
+        } else {
+            bookMarkRepository.save(new BookMark(bookMarkId));
+        }
     }
 }
