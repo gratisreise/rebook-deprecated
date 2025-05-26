@@ -61,4 +61,8 @@ public class Book {
         this.category = category;
         this.price = title.getPrice() != null ? title.getPrice() : 0;
     }
+
+    public Book(long bookId){
+        this.Id = bookId;
+    }
 }

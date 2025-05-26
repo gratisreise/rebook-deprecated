@@ -1,9 +1,13 @@
 package com.example.rebookbookservice.service;
 
+import com.example.rebookbookservice.model.PageResponse;
+import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.entity.BookMark;
 import com.example.rebookbookservice.model.entity.compositekey.BookMarkId;
 import com.example.rebookbookservice.repository.BookMarkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +22,12 @@ public class BookMarkService {
         if (bookMarkRepository.existsById(bookMarkId)) {
             bookMarkRepository.deleteById(bookMarkId);
         } else {
-            bookMarkRepository.save(new BookMark(bookMarkId));
+            bookMarkRepository.save(new BookMark(bookMarkId, new Book(bookId)));
         }
+    }
+
+
+    public PageResponse<Book> getMarkedBooks(String userId, Pageable pageable) {
+        return new PageResponse<>(bookMarkRepository.findBooksBookmarkedByUser(userId, pageable));
     }
 }
