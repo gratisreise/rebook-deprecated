@@ -18,7 +18,7 @@ import lombok.Setter;
 public class Book {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -63,6 +63,6 @@ public class Book {
     }
 
     public Book(long bookId){
-        this.Id = bookId;
+        this.id = bookId;
     }
 }

@@ -9,6 +9,7 @@ import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
 import com.example.rebookbookservice.service.BookService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -52,6 +53,8 @@ public class BookController {
     }
 
 
-
-
+    @GetMapping("/recommendations/{userId}")
+    public List<Long> recommendations(@PathVariable String userId) {
+        return bookService.getRecommendedBookIds(userId);
+    }
 }

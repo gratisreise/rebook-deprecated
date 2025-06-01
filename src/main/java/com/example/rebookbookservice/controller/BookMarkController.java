@@ -35,5 +35,4 @@ public class BookMarkController {
         return ResponseService.getSingleResult(bookMarkService.getMarkedBooks(userId, pageable));
     }
 
-
 }

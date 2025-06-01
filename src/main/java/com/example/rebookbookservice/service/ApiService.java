@@ -33,7 +33,7 @@ public class ApiService {
             String model = "gemini-2.0-flash-lite";
             String text = String.format(
                 "소설, 자기계발, 어린이/청소년, IT/컴퓨터, 예술/문화, 건강/취미 중 %s의 분류는?? 분류명으로 대답\n", title);
-            return client.models.generateContent(model, text, null).text();
+            return client.models.generateContent(model, text, null).text().trim();
         } catch(RuntimeException e) {
             log.error("Error occurred while gemini api running");
             throw new RuntimeException(e.getMessage(), e);
