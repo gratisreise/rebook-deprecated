@@ -14,4 +14,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findByCategoryIn(List<String> categories, Pageable pageable);
     List<Book> findByCategoryIn(List<String> categories);
     Book findByCategory(String category);
+
+    boolean existsByIsbn(String isbn);
 }

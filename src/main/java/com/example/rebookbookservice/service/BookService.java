@@ -1,6 +1,7 @@
 package com.example.rebookbookservice.service;
 
 import com.example.rebookbookservice.common.PageResponse;
+import com.example.rebookbookservice.exception.CDuplicatedDataException;
 import com.example.rebookbookservice.feigns.UserClient;
 import com.example.rebookbookservice.model.BookRequest;
 import com.example.rebookbookservice.model.BookResponse;
@@ -34,6 +35,10 @@ public class BookService {
 
     @Transactional
     public void postBook(BookRequest request) {
+        if(bookRepository.existsByIsbn(request.getIsbn())){
+            log.info("Book already exists");
+            throw new CDuplicatedDataException("Duplicate BookInfo");
+        }
         String category = apiService.getCategory(request.getTitle());
         LocalDate publishedDate = LocalDate.parse(request.getPublishedDate(), DateTimeFormatter.BASIC_ISO_DATE);
         Book book = new Book(request, category, publishedDate);
