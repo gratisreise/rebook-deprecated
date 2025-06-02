@@ -5,6 +5,7 @@ import com.example.rebookbookservice.common.PageResponse;
 import com.example.rebookbookservice.common.ResponseService;
 import com.example.rebookbookservice.common.SingleResult;
 import com.example.rebookbookservice.model.BookRequest;
+import com.example.rebookbookservice.model.BookResponse;
 import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
 import com.example.rebookbookservice.service.BookService;
@@ -40,7 +41,7 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public SingleResult<PageResponse<Book>> search(
+    public SingleResult<PageResponse<BookResponse>> search(
         @RequestParam String keyword,
         @PageableDefault(sort = "id", direction = Direction.ASC) Pageable pageable
     ) {
@@ -48,7 +49,7 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}")
-    public SingleResult<Book> getBook(@PathVariable Long bookId) {
+    public SingleResult<BookResponse> getBook(@PathVariable Long bookId) {
         return ResponseService.getSingleResult(bookService.getBook(bookId));
     }
 

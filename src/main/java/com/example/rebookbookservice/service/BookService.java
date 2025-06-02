@@ -3,13 +3,14 @@ package com.example.rebookbookservice.service;
 import com.example.rebookbookservice.common.PageResponse;
 import com.example.rebookbookservice.feigns.UserClient;
 import com.example.rebookbookservice.model.BookRequest;
+import com.example.rebookbookservice.model.BookResponse;
 import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.naver.NaverBooksResponse;
 import com.example.rebookbookservice.repository.BookRepository;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,13 +41,14 @@ public class BookService {
     }
 
 
-    public PageResponse<Book> searchBooks(String keyword, Pageable pageable) {
+    public PageResponse<BookResponse> searchBooks(String keyword, Pageable pageable) {
         Page<Book> books = bookRepository.findByTitleContaining(keyword, pageable);
-        return new PageResponse<>(books);
+        Page<BookResponse> response = books.map(BookResponse::new);
+        return new PageResponse<>(response);
     }
 
-    public Book getBook(Long bookId) {
-        return bookReader.readBookById(bookId);
+    public BookResponse getBook(Long bookId) {
+        return new BookResponse(bookReader.readBookById(bookId));
     }
 
     public List<Long> getRecommendedBookIds(String userId) {
