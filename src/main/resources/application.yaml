@@ -1,3 +1,5 @@
+
+
 spring:
   application:
     name: book-service
@@ -6,8 +8,6 @@ spring:
     import: "optional:configserver:http://rebook-config:8888"
 
   profiles:
-    active: dev
-
-
+      active: dev
 
 

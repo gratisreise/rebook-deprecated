@@ -22,15 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookMarkController {
     private final BookMarkService bookMarkService;
 
-    //@RequestHeader("X-User-Id") String userId
-    //
     @PostMapping("/{bookId}/marks")
     public CommonResult markingToggle(@RequestHeader("X-User-Id") String userId, @PathVariable Long bookId) {
         bookMarkService.markingToggle(userId, bookId);
         return ResponseService.getSuccessResult();
     }
 
-    //@RequestHeader("X-User-Id") String userId
+
     @GetMapping("/marks")
     public SingleResult<PageResponse<Book>> getMarkedBooks(@RequestHeader("X-User-Id") String userId, @PageableDefault Pageable pageable) {
         return ResponseService.getSingleResult(bookMarkService.getMarkedBooks(userId, pageable));

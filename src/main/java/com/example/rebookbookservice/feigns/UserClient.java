@@ -1,5 +1,6 @@
 package com.example.rebookbookservice.feigns;
 
+import com.example.rebookbookservice.common.PageResponse;
 import com.example.rebookbookservice.model.user.AuthorsRequest;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -21,4 +22,5 @@ public interface UserClient {
     //해당 카테고리 선호 유저들
     @GetMapping("/categories/favorites")
     List<String> getUserByCategory(@RequestParam String category);
+
 }

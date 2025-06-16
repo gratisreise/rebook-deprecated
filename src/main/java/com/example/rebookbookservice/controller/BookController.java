@@ -57,4 +57,6 @@ public class BookController {
     public List<Long> recommendations(@PathVariable String userId) {
         return bookService.getRecommendedBookIds(userId);
     }
+
+
 }
