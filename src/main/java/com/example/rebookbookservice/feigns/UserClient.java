@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name="user-service", url="http://localhost:9000/api/users")
+@FeignClient(name="user-service", url="user-service")
 public interface UserClient {
     //유저 닉네임 가져오기
-    @PostMapping("/authors")
+    @PostMapping("/api/users/authors")
     List<String> getUser(@RequestBody AuthorsRequest request);
 
-    @GetMapping("/categories/recommendations/{userId}")
+    @GetMapping("/api/users/categories/recommendations/{userId}")
     List<String> getFavoriteCategories(@PathVariable String userId);
 
     //해당 카테고리 선호 유저들
-    @GetMapping("/categories/favorites")
+    @GetMapping("/api/users/categories/favorites")
     List<String> getUserByCategory(@RequestParam String category);
 
 }

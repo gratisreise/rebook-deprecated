@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookReader {
     private final BookRepository bookRepository;
 
-
     public Book readBookById(Long bookId) {
         return bookRepository.findById(bookId)
             .orElseThrow(CMissingDataException::new);
