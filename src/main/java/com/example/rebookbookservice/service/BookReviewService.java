@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookReviewService {
     private final BookReviewRepository bookReviewRepository;
     private final BookReviewReader bookReviewReader;
+    private final BookReader bookReader;
     private final UserClient userClient;
 
     @Transactional
@@ -34,25 +35,33 @@ public class BookReviewService {
         if(bookReviewRepository.existsByBookIdAndUserId(bookId, userId)){
             throw new CDuplicatedDataException("BookReview already exist");
         }
-        Book book = new Book(bookId);
+
+        Book book = bookReader.readBookById(bookId);
         BookReview bookReview = new BookReview(request, book, userId);
         bookReviewRepository.save(bookReview);
+
+        //도서 별점 적용
+        starRatingUpdate(bookId, book);
     }
 
     @Transactional
-    public void updateBookReview(BookReviewRequest request, Long reviewId) {
+    public void updateBookReview(BookReviewRequest request, Long reviewId, Long bookId) {
         BookReview review = bookReviewReader.readReview(reviewId);
         review.update(request);
+        Book book = bookReader.readBookById(bookId);
+        starRatingUpdate(bookId, book);
     }
 
     @Transactional
-    public void deleteBookReview(String userId, Long reviewId) {
+    public void deleteBookReview(String userId, Long reviewId, Long bookId) {
         BookReview review = bookReviewReader.readReview(reviewId);
         if(!userId.equals(review.getUserId())) {
             log.error("Unauthorized to delete book review");
             throw new CUnauthrizedException("Unauthorized to delete book review");
         }
         bookReviewRepository.delete(review);
+        Book book = bookReader.readBookById(bookId);
+        starRatingUpdate(bookId, book);
     }
 
     public PageResponse<BookReviewResponse> getReviews(Long bookId, Pageable pageable) {
@@ -76,6 +85,11 @@ public class BookReviewService {
                 String author = authors.get(i);
                 return new BookReviewResponse(review, author);
             }).toList();
+    }
+
+    private void starRatingUpdate(Long bookId, Book book) {
+        float ratingAvg = bookReviewRepository.findAverageScoreByBookId(bookId);
+        book.setRating(ratingAvg);
     }
 
 }

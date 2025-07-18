@@ -38,7 +38,7 @@ public class BookService {
     public NaverBooksResponse searchNaverBooks(String keyword) {
         NaverBooksResponse response = apiService.searchBooks(keyword);
         List<Item> filteredItems = response.getItems().stream()
-            .filter(item -> !bookRepository.existsByIsbn(item.getIsbn()))
+            .filter(item -> !bookReader.existsByIsbn(item.getIsbn()))
             .toList();
         response.setItems(filteredItems);
         return response;
@@ -98,4 +98,6 @@ public class BookService {
             .map(res -> checkMarking(res, userId));
         return new PageResponse<>(responses);
     }
+
+
 }

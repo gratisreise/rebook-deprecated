@@ -41,24 +41,26 @@ public class BookReviewController {
         return ResponseService.getSuccessResult();
     }
 
-    @PutMapping("/reviews/{reviewId}")
+    @PutMapping("/{bookId}/reviews/{reviewId}")
     @Operation(summary = "도서리뷰수정")
     public CommonResult updateReview(
         @PathVariable Long reviewId,
+        @PathVariable Long bookId,
         @Valid @RequestBody BookReviewRequest request
     ){
-      bookReviewService.updateBookReview(request, reviewId);
+      bookReviewService.updateBookReview(request, reviewId, bookId);
       return ResponseService.getSuccessResult();
     }
 
     // @RequestHeader("X-User-Id") String userId,
-    @DeleteMapping("/reviews/{reviewId}")
+    @DeleteMapping("/{bookId}/reviews/{reviewId}")
     @Operation(summary = "도서리뷰삭제")
     public CommonResult deleteReview(
         @RequestHeader("X-User-Id") String userId,
-        @PathVariable Long reviewId
+        @PathVariable Long reviewId,
+        @PathVariable Long bookId
     ){
-        bookReviewService.deleteBookReview(userId, reviewId);
+        bookReviewService.deleteBookReview(userId, reviewId, bookId);
         return ResponseService.getSuccessResult();
     }
 

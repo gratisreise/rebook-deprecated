@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookReviewResponse {
+    private Long reviewId;
     private Long bookId;
     private String author;
     private String content;
@@ -16,6 +17,7 @@ public class BookReviewResponse {
     private LocalDateTime updatedAt;
 
     public BookReviewResponse(BookReview bookReview, String author) {
+        this.reviewId = bookReview.getId();
         this.bookId = bookReview.getId();
         this.content = bookReview.getContent();
         this.score = bookReview.getScore();
