@@ -3,6 +3,7 @@ package com.example.rebookbookservice.repository;
 import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.entity.BookMark;
 import com.example.rebookbookservice.model.entity.compositekey.BookMarkId;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +19,7 @@ public interface BookMarkRepository extends JpaRepository<BookMark, BookMarkId> 
     Page<Book> findBooksBookmarkedByUser(String userId, Pageable pageable);
     boolean existsByBookMarkId(BookMarkId bookMarkId);
 
-    BookMarkId book(Book book);
+    @Query("SELECT bm.bookMarkId.userId FROM BookMark bm WHERE bm.bookMarkId.bookId = :bookId")
+    List<String> findUserIdsByBookId(Long bookId);
+
 }

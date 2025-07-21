@@ -2,6 +2,7 @@ package com.example.rebookbookservice.service;
 
 import com.example.rebookbookservice.exception.CMissingDataException;
 import com.example.rebookbookservice.model.entity.Book;
+import com.example.rebookbookservice.repository.BookMarkRepository;
 import com.example.rebookbookservice.repository.BookRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class BookReader {
     private final BookRepository bookRepository;
-
+    private final BookMarkRepository bookMarkRepository;
 
 
     public Book readBookById(Long bookId) {
@@ -31,13 +32,15 @@ public class BookReader {
         log.info("Reading books by category: {}", categories);
         Page<Book> books =  bookRepository.findByCategoryIn(categories, pageable);
         List<Book> bookList = bookRepository.findByCategoryIn(categories);
-        Book book = bookRepository.findByCategory("소설");
-        log.info("book {}", book);
         log.info("books: {} ", bookList.toString());
         log.info("books count: {}", books.getContent());
         return bookList;
     }
     public boolean existsByIsbn(String isbn){
         return bookRepository.existsByIsbn(isbn);
+    }
+
+    public List<String> getUserIdsByBookId(Long bookId) {
+        return bookMarkRepository.findUserIdsByBookId(bookId);
     }
 }

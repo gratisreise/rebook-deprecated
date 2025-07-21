@@ -5,7 +5,7 @@ import com.example.rebookbookservice.exception.CDuplicatedDataException;
 import com.example.rebookbookservice.feigns.UserClient;
 import com.example.rebookbookservice.model.BookRequest;
 import com.example.rebookbookservice.model.BookResponse;
-import com.example.rebookbookservice.model.NotificationMessage;
+import com.example.rebookbookservice.model.message.NotificationBookMessage;
 import com.example.rebookbookservice.model.entity.Book;
 import com.example.rebookbookservice.model.entity.compositekey.BookMarkId;
 import com.example.rebookbookservice.model.naver.Item;
@@ -59,9 +59,9 @@ public class BookService {
 
         //알림 메세지 보내기
         String message = String.format("%s 카테고리에 새로운 도서가 등록되었습니다.", category);
-        NotificationMessage notificationMessage = new NotificationMessage();
-        notificationMessage.makeMessage(postedBook.getId(), category);
-        publisher.sendNotification(notificationMessage);
+        NotificationBookMessage notificationBookMessage =
+            new NotificationBookMessage(postedBook.getId(), category, message);
+        publisher.sendNotification(notificationBookMessage);
     }
 
     public PageResponse<BookResponse> searchBooks(String keyword, Pageable pageable) {
