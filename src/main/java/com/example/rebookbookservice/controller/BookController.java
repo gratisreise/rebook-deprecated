@@ -62,6 +62,7 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}")
+    @Operation(summary = "도서상세조회")
     public SingleResult<BookResponse> getBook(
         @RequestHeader("X-User-Id") String userId, @PathVariable Long bookId) {
         return ResponseService.getSingleResult(bookService.getBook(userId, bookId));
@@ -81,6 +82,7 @@ public class BookController {
 
     //거래서비스 호출용
     @GetMapping("/recommendations/{userId}")
+    @Operation(summary = "추천도선id조회", description = "내부 서비스 통신 api")
     public List<Long> recommendedBookIds(@PathVariable String userId) {
         return bookService.getRecommendedBookIds(userId);
     }
