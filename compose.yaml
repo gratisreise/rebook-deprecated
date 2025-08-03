@@ -1,0 +1,190 @@
+services: 
+  ## 클라우드 서비스 ##
+  rebook-eureka: #유레카
+    container_name: rebook-eureka
+    image: nooaahh/rebook-eureka
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SENTRY_DSN=${SENTRY_DSN}
+      - JAVA_OPTS=-Xms256m -Xmx512m
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8761'"]
+      interval: 5s
+      timeout: 5s
+      retries: 6
+
+  rebook-config: #설정
+    container_name: rebook-config
+    image: nooaahh/rebook-config
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - GIT_USERNAME=${GIT_USERNAME}
+      - GIT_PASSWORD=${GIT_PASSWORD}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SECRET_KEY=${SECRET_KEY}
+    ports:
+      - "8888:8888"
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+  
+  rebook-gateway: # 게이트웨이
+    container_name: rebook-gateway
+    image: nooaahh/rebook-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SENTRY_DSN=${SENTRY_DSN}
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8080:8080"
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+
+## 키클록 인증 ##
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.5
+    container_name: keycloak
+    restart: unless-stopped
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://34.158.202.64:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: true
+      KC_HTTP_ENABLED: true
+      KC_HTTP_PORT: 8081
+    command: start
+    ports:
+      - "8081:8081"
+
+## 서비스  ##
+  rebook-user:
+    image: nooaahh/rebook-user-service
+    container_name: rebook-user
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+    ports:
+      - "9000:8080"
+
+  rebook-book:
+    image: nooaahh/rebook-book-service
+    container_name: rebook-book
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+    ports:
+      - "9001:8080"
+
+  rebook-trading:
+    image: nooaahh/rebook-trading-service
+    container_name: rebook-trading
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+    ports:
+      - "9002:8080"
+      
+
+  rebook-chat:
+    image: nooaahh/rebook-chat-service
+    container_name: rebook-chat
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+    ports:
+      - "9003:8080"
+
+  rebook-notification:
+    image: nooaahh/rebook-notification-service
+    container_name: rebook-notification
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
+    depends_on:
+      rebook-eureka:
+        condition: service_healthy
+    ports:
+      - "9004:8080"
+
+  redis: # redis
+    image: redis:8.0.2-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD --port 6379"
+
+
+  mongodb: # mongo
+    image: mongo:8.0-noble
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongos
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
+      MONGO_INITDB_DATABASE: chatdb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+## 메세지 큐 ##
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+
+## 모니터링 ##
+  prometheus:
+    image: prom/prometheus:v3.4.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+  
+  grafana:
+    image: grafana/grafana:12.0.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini:ro
+    environment:
+      - GF_SERVER_DOMAIN=api.rebookcloak.click
+      - GF_SERVER_ROOT_URL=https://api.rebookcloak.click/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    depends_on:
+      - prometheus
+
+volumes:
+  pgdata:
+  mongo-data:

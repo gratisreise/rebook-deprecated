@@ -1,0 +1,76 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'rebook-eureka'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-eureka:8761']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-eureka'
+
+  - job_name: 'rebook-config'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-config:8888']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-config'
+
+  - job_name: 'rebook-gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-gateway:8080']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-gateway'
+
+  - job_name: 'rebook-user'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-user:8080']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-user'
+
+  - job_name: 'rebook-book'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-book:8080']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-book'
+
+  - job_name: 'rebook-trading'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-trading:8080']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-trading'
+
+  - job_name: 'rebook-chat'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-chat:8080']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-chat'
+
+  - job_name: 'rebook-notification'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['rebook-notification:8080']
+    relabel_configs:
+      - source_labels: ['__job__']
+        target_label: 'instance'
+        replacement: 'rebook-notification'
