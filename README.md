@@ -259,7 +259,7 @@ curl http://localhost:9000/actuator/prometheus
 ```
 
 **운영 환경**:
-- **Grafana 모니터링 대시보드**: https://api.rebookcloak.click/grafana/login
+- **Grafana 모니터링 대시보드**: https://api.rebookcloak.click/grafana/goto/PToXkaeHg?orgId=1
 
 ## 🛡️ 보안
 
