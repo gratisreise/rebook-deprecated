@@ -137,8 +137,7 @@ cd ../rebook-notification
 
 #### 3. 서비스 확인
 
-- **Eureka Dashboard**: http://localhost:8761
-- **API Gateway**: http://localhost:8080
+- **Eureka Dashboard**: https://api.rebookcloak.click/eureka/
 - **개별 서비스**: 각 서비스의 포트로 직접 접근 가능
 
 ### Docker Compose로 시작하기
@@ -180,11 +179,11 @@ rebook/
 각 서비스는 Swagger UI를 통해 API 문서를 제공합니다:
 
 **로컬 개발 환경**:
-- **User Service**: http://localhost:9000/swagger-ui.html
-- **Book Service**: http://localhost:9001/swagger-ui.html
-- **Trading Service**: http://localhost:9002/swagger-ui.html
-- **Chat Service**: http://localhost:9003/swagger-ui.html
-- **Notification Service**: http://localhost:9004/swagger-ui.html
+- **User Service**: https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=rebook-user
+- **Book Service**: https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=rebook-book
+- **Trading Service**: https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=rebook-trading
+- **Chat Service**: https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=rebook-chat
+- **Notification Service**: https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=rebook-notification
 
 **운영 환경**:
 - **통합 API 문서**: https://api.rebookcloak.click/swagger-ui/index.html
@@ -228,7 +227,6 @@ export GEMINI_API_KEY=your-gemini-api-key
 
 ## 🔗 추가 리소스
 
-- **아키텍처 상세 문서**: [CLAUDE.md](./CLAUDE.md)
 - **설정 관리 가이드**: [rebook-yamls/README.md](./rebook-yamls/README.md)
 - **API 게이트웨이 가이드**: [rebook-gateway/README.md](./rebook-gateway/README.md)
 
@@ -267,6 +265,3 @@ curl http://localhost:9000/actuator/prometheus
 - 운영 환경 설정 암호화 (`{cipher}` 프리픽스)
 - CORS 설정 및 관리
 - Actuator 엔드포인트 접근 제한
-
-자세한 내용은 [CLAUDE.md - Security Analysis](./CLAUDE.md#-security-analysis)를 참조하세요.
-
