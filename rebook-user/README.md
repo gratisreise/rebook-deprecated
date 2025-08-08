@@ -64,12 +64,6 @@ Keycloak 기반 OAuth2 인증, 프로필 관리, 선호도 시스템을 담당�
 - ✅ Redis 기반 Refresh Token 캐싱 (`refresh:` 접두사)
 - ✅ 토큰 갱신 API를 통한 자동 재발급
 
-#### 인증 흐름
-```
-사용자 → Keycloak 인증 → User Service 토큰 검증
-      → 내부 JWT 발급 → Redis 캐싱 → API 접근 권한 부여
-```
-
 ### 3.2 사용자 프로필 관리
 
 #### 프로필 CRUD

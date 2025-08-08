@@ -94,7 +94,7 @@ rebook-yamls/
 **주요 설정 항목**:
 - **서버 포트**: 기본 포트 8080 설정
 - **데이터베이스**: 운영 DB 서버 연결 (IP: 34.158.202.64, 암호화된 비밀번호 사용)
-- **JPA/Hibernate**: SQL 로깅 비활성화, validate 모드 권장 (현재 update 사용 중 ⚠️)
+- **JPA/Hibernate**: SQL 로깅 비활성화, validate 모드 권장
 - **Redis**: 암호화된 비밀번호로 캐시 서버 연결
 - **RabbitMQ**: admin 계정 사용, 암호화된 비밀번호로 메시지 큐 연결
 - **Actuator**: 필수 엔드포인트만 노출 (health, info, prometheus) - 보안 강화

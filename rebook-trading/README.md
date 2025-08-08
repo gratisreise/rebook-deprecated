@@ -45,10 +45,7 @@
 - [5. 아키텍처](#5-아키텍처)
 - [6. API 문서](#6-api-문서)
 - [7. 프로젝트 구조](#7-프로젝트-구조)
-- [8. 코드 분석 및 품질 지표](#8-코드-분석-및-품질-지표)
-- [9. 개발 및 배포 가이드](#9-개발-및-배포-가이드)
-- [10. 문제 해결](#10-문제-해결-troubleshooting)
-- [11. 라이선스](#11-라이선스)
+
 
 ---
 
@@ -193,39 +190,6 @@
     └─────────────────────────────────────────────┘
 ```
 
-### 5.2 서비스 통신 패턴
-
-#### 1. 동기 통신 (OpenFeign)
-```java
-@FeignClient(name = "book-service")
-public interface BookClient {
-    // Book Service에서 사용자의 추천 도서 ID 목록 조회
-    @GetMapping("/api/books/recommendations")
-    List<Long> getRecommendedBookIds(@RequestHeader("X-User-Id") String userId);
-}
-```
-- **사용 사례**: 사용자 맞춤 도서 추천 거래 목록 조회
-- **로드 밸런싱**: Eureka를 통한 자동 서비스 탐색 및 로드 밸런싱
-
-#### 2. 비동기 통신 (RabbitMQ)
-```java
-@Service
-public class NotificationPublisher {
-    // Notification Service로 거래 알림 메시지 발행
-    public void publishTradeNotification(NotificationTradeMessage message) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
-    }
-}
-```
-- **사용 사례**: 거래 생성/가격 변동 시 찜한 사용자에게 알림 전송
-- **메시지 포맷**: JSON 직렬화된 `NotificationTradeMessage` DTO
-
-#### 3. 서비스 디스커버리 (Eureka)
-- 모든 마이크로서비스가 Eureka Server에 자동 등록
-- 서비스 이름(`book-service`)으로 동적 라우팅
-- 헬스체크 기반 자동 장애 감지
-
-
 ### 5.3 엔티티 관계도 (ERD)
 
 ```
@@ -267,7 +231,7 @@ public class NotificationPublisher {
 애플리케이션 실행 후 아래 URL에서 대화형 API 문서를 확인할 수 있습니다:
 
 ```
-http://localhost:8080/swagger-ui.html
+https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=rebook-trading
 ```
 
 ### 6.2 API 엔드포인트 상세
