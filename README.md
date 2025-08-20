@@ -16,7 +16,7 @@ Rebook은 Spring Cloud 기반 마이크로서비스 아키텍처로 구축된 �
 
 ## 🏗 시스템 아키텍처
 ### 소프트웨어 아키텍쳐
-![소프트웨어아키텍쳐](https://rebook-bucket.s3.ap-northeast-2.amazonaws.com/rebook/software_architecture.jpg)
+![소프트웨어아키텍쳐](https://rebook-bucket.s3.ap-northeast-2.amazonaws.com/rebook/software_architecture.png)
 
 ## 🎯 마이크로서비스 구성
 
@@ -79,79 +79,6 @@ Rebook은 Spring Cloud 기반 마이크로서비스 아키텍처로 구축된 �
 - **Prometheus** - 메트릭 수집
 - **Sentry** - 에러 추적 및 로깅
 
-## 🚀 시작하기
-
-### 필수 요구사항
-
-| 항목 | 버전 | 설명 |
-|------|------|------|
-| Java | 17+ | OpenJDK 또는 Oracle JDK |
-| Gradle | 7.0+ | 빌드 도구 |
-| PostgreSQL | 13+ | 메인 데이터베이스 |
-| MongoDB | 5.0+ | 채팅 메시지 저장 |
-| Redis | 6+ | 캐싱 레이어 |
-| RabbitMQ | 3.9+ | 메시징 브로커 |
-| Docker | 20.10+ | 컨테이너화 (선택사항) |
-
-### 로컬 개발 환경 설정
-
-#### 1. 인프라 서비스 시작 (순서 중요)
-
-```bash
-# 1. Eureka 서버 시작
-cd rebook-eureka
-./gradlew bootRun
-
-# 2. Config 서버 시작 (Eureka 등록 필요)
-cd ../rebook-config
-./gradlew bootRun
-
-# 3. Gateway 시작 (Eureka에서 서비스 발견)
-cd ../rebook-gateway
-./gradlew bootRun
-```
-
-#### 2. 비즈니스 서비스 시작
-
-```bash
-# User 서비스
-cd rebook-user
-./gradlew bootRun
-
-# Book 서비스
-cd ../rebook-book
-./gradlew bootRun
-
-# Trading 서비스
-cd ../rebook-trading
-./gradlew bootRun
-
-# Chat 서비스
-cd ../rebook-chat
-./gradlew bootRun
-
-# Notification 서비스
-cd ../rebook-notification
-./gradlew bootRun
-```
-
-#### 3. 서비스 확인
-
-- **Eureka Dashboard**: https://api.rebookcloak.click/eureka/
-- **개별 서비스**: 각 서비스의 포트로 직접 접근 가능
-
-### Docker Compose로 시작하기
-
-```bash
-# 전체 시스템 시작
-docker-compose up -d
-
-# 로그 확인
-docker-compose logs -f
-
-# 전체 시스템 종료
-docker-compose down
-```
 
 ## 💻 개발 가이드
 
@@ -190,40 +117,6 @@ rebook/
 
 > **참고**: Swagger UI는 개발 환경에서만 활성화됩니다.
 
-### 환경 변수 설정
-
-각 서비스는 다음 환경 변수가 필요합니다:
-
-```bash
-# Gateway
-export JWT_SECRET=your-jwt-secret
-export SENTRY_DSN=your-sentry-dsn
-
-# Config Server
-export ENCRYPT_KEY=your-encryption-key
-
-# User Service
-export AWS_ACCESS_KEY=your-aws-access-key
-export AWS_SECRET_KEY=your-aws-secret-key
-
-# Book Service
-export NAVER_CLIENT_ID=your-naver-client-id
-export NAVER_CLIENT_SECRET=your-naver-client-secret
-export GEMINI_API_KEY=your-gemini-api-key
-```
-
-### 개발 프로파일
-
-- **dev**: 개발 환경 (로컬 Docker 컨테이너 사용)
-- **prod**: 운영 환경 (외부 DB 및 암호화된 설정)
-
-```bash
-# 개발 프로파일로 실행
-./gradlew bootRun --args='--spring.profiles.active=dev'
-
-# 운영 프로파일로 실행
-./gradlew bootRun --args='--spring.profiles.active=prod'
-```
 
 ## 🔗 추가 리소스
 
