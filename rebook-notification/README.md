@@ -37,13 +37,11 @@ RabbitMQ 기반 메시지 처리와 Server-Sent Events를 통한 실시간 알�
 
 ## 2. 목차
 
-- [1. 개요](#1-개요)
-- [2. 목차](#2-목차)
-- [3. 주요 기능](#3-주요-기능)
-- [4. 기술 스택](#4-기술-스택)
-- [5. 아키텍처](#5-아키텍처)
-- [6. API 문서](#6-api-문서)
-- [7. 프로젝트 구조](#7-프로젝트-구조)
+- [주요 기능](#3-주요-기능)
+- [기술 스택](#4-기술-스택)
+- [아키텍처](#5-아키텍처)
+- [API 문서](#6-api-문서)
+- [프로젝트 구조](#7-프로젝트-구조)
 
 ---
 
@@ -285,7 +283,7 @@ https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=reb
 | 디렉토리 | 역할 | 주요 기능 |
 |---------|------|----------|
 | **advice/** | 전역 예외 처리 | `@RestControllerAdvice`로 모든 컨트롤러 예외 통합 핸들링 |
-| **common/** | 공통 응답 모델 | 통일된 API 응답 구조 제공 (`CommonResult`, `SingleResult`, `PageResponse`) |
+| **common/** | 응답 표준화 | 통일된 API 응답 구조 제공 (`CommonResult`, `SingleResult`, `PageResponse`) |
 | **config/** | 인프라 설정 | RabbitMQ Queue/Exchange/Binding 설정 |
 | **controller/** | REST API | 엔드포인트 정의 및 Swagger 문서화, SSE 연결 관리 |
 | **enums/** | 상태 관리 | 알림 타입 enum (BOOK, TRADE, CHAT, PAYMENT) |
@@ -297,79 +295,25 @@ https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=reb
 
 
 ```
-rebook-notification-service/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/rebooknotificationservice/
-│   │   │   ├── advice/                        # 전역 예외 처리
-│   │   │   │   └── GlobalExceptionHandler.java  (RestControllerAdvice)
-│   │   │   │
-│   │   │   ├── common/                        # 공통 응답 모델
-│   │   │   │   ├── CommonResult.java           (기본 성공 응답)
-│   │   │   │   ├── SingleResult.java           (단일 데이터 응답)
-│   │   │   │   ├── ListResult.java             (리스트 응답)
-│   │   │   │   ├── PageResponse.java           (페이지네이션 응답)
-│   │   │   │   ├── ResponseService.java        (응답 래핑 팩토리)
-│   │   │   │   └── ResultCode.java             (응답 코드 상수)
-│   │   │   │
-│   │   │   ├── config/                        # 설정 클래스
-│   │   │   │   └── RabbitConfig.java           (RabbitMQ Queue/Exchange/Binding)
-│   │   │   │
-│   │   │   ├── controller/                    # REST 컨트롤러
-│   │   │   │   ├── SseController.java          (SSE 연결 엔드포인트)
-│   │   │   │   ├── NotificationController.java (알림 CRUD)
-│   │   │   │   └── NotificationSettingController.java  (설정 관리)
-│   │   │   │
-│   │   │   ├── enums/                         # 열거형
-│   │   │   │   └── Type.java                   (알림 타입: BOOK, TRADE, CHAT, PAYMENT)
-│   │   │   │
-│   │   │   ├── exception/                     # 커스텀 예외
-│   │   │   │   ├── CMissingDataException.java  (404 데이터 미존재)
-│   │   │   │   ├── CDuplicatedDataException.java (409 중복 데이터)
-│   │   │   │   ├── CUnauthorizedException.java (401 권한 없음)
-│   │   │   │   └── CInvalidDataException.java  (400 유효하지 않은 입력)
-│   │   │   │
-│   │   │   ├── feigns/                        # Feign 클라이언트
-│   │   │   │   ├── UserClient.java             (User Service 연동)
-│   │   │   │   └── BookClient.java             (Book Service 연동)
-│   │   │   │
-│   │   │   ├── model/                         # DTO 및 엔티티
-│   │   │   │   ├── entity/                    # JPA 엔티티
-│   │   │   │   │   ├── Notification.java       (알림 메인 엔티티)
-│   │   │   │   │   ├── NotificationSetting.java (알림 설정 엔티티)
-│   │   │   │   │   └── compositekey/
-│   │   │   │   │       └── NotificationSettingId.java (복합키)
-│   │   │   │   ├── message/                   # 메시징 DTO
-│   │   │   │   │   ├── NotificationMessage.java (메시지 인터페이스)
-│   │   │   │   │   ├── NotificationBookMessage.java
-│   │   │   │   │   ├── NotificationTradeMessage.java
-│   │   │   │   │   └── NotificationChatMessage.java
-│   │   │   │   ├── NotificationResponse.java   (알림 응답 DTO)
-│   │   │   │   └── NotificationSettingResponse.java (설정 응답 DTO)
-│   │   │   │
-│   │   │   ├── repository/                    # JPA 리포지토리
-│   │   │   │   ├── NotificationRepository.java (알림 데이터 접근)
-│   │   │   │   └── NotificationSettingRepository.java (설정 데이터 접근)
-│   │   │   │
-│   │   │   ├── service/                       # 비즈니스 로직
-│   │   │   │   ├── SseService.java             (SSE 연결 관리, RabbitMQ 리스너)
-│   │   │   │   ├── NotificationService.java    (알림 생성 및 관리)
-│   │   │   │   ├── NotificationReader.java     (알림 조회 전용)
-│   │   │   │   ├── NotificationSettingService.java (설정 관리)
-│   │   │   │   └── NotificationSettingReader.java  (설정 조회 전용)
-│   │   │   │
-│   │   │   └── RebookNotificationServiceApplication.java (메인 애플리케이션)
-│   │   │
-│   │   └── resources/
-│   │       ├── application.yaml               (기본 설정)
-│   │       ├── application-dev.yaml           (개발 환경)
-│   │       └── application-prod.yaml          (운영 환경)
-│   │
-│   └── test/
-│       └── java/com/example/rebooknotificationservice/
-│           └── (테스트 클래스들)
+rebook-notification/
+├── src/main/java/com/example/rebooknotificationservice/
+│   ├── controller/       # REST API 엔드포인트 & SSE 연결
+│   ├── service/          # 비즈니스 로직 (Service/Reader 패턴)
+│   ├── repository/       # JPA 데이터 접근 계층
+│   ├── model/            # Entity, DTO, Message 객체
+│   ├── feigns/           # OpenFeign 클라이언트 (User/Book Service)
+│   ├── config/           # RabbitMQ 설정
+│   ├── enums/            # 알림 타입 enum
+│   ├── exception/        # 커스텀 예외
+│   ├── advice/           # 전역 예외 처리
+│   └── common/           # 공통 응답 모델
 │
-├── build.gradle                               # Gradle 빌드 설정
-├── Dockerfile                                 # Docker 이미지 빌드
-└── README.md                                  # 프로젝트 문서 (본 파일)
+├── src/main/resources/
+│   ├── application.yaml         # Spring Cloud Config 연동
+│   ├── application-dev.yaml     # 개발 환경 설정
+│   └── application-prod.yaml    # 운영 환경 설정
+│
+├── build.gradle
+├── Dockerfile
+└── README.md
 ```

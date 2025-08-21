@@ -38,13 +38,11 @@ Keycloak 기반 OAuth2 인증, 프로필 관리, 선호도 시스템을 담당�
 
 ## 2. 목차
 
-- [1. 개요](#1-개요)
-- [2. 목차](#2-목차)
-- [3. 주요 기능](#3-주요-기능)
-- [4. 기술 스택](#4-기술-스택)
-- [5. 아키텍처](#5-아키텍처)
-- [6. API 문서](#6-api-문서)
-- [7. 프로젝트 구조](#7-프로젝트-구조)
+- [주요 기능](#3-주요-기능)
+- [기술 스택](#4-기술-스택)
+- [아키텍처](#5-아키텍처)
+- [API 문서](#6-api-문서)
+- [프로젝트 구조](#7-프로젝트-구조)
 
 ---
 
@@ -317,84 +315,26 @@ https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=reb
 
 
 ```
-rebook-user-service/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/rebookuserservice/
-│   │   │   ├── advice/                        # 전역 예외 처리
-│   │   │   │   └── GlobalExceptionHandler.java  (RestControllerAdvice)
-│   │   │   │
-│   │   │   ├── clients/                       # Feign 클라이언트
-│   │   │   │   └── NotificationClient.java     (Notification Service 연동)
-│   │   │   │
-│   │   │   ├── common/                        # 공통 응답 모델
-│   │   │   │   ├── CommonResult.java           (기본 성공 응답)
-│   │   │   │   ├── SingleResult.java           (단일 데이터 응답)
-│   │   │   │   ├── ListResult.java             (리스트 응답)
-│   │   │   │   └── ResponseService.java        (응답 래핑 팩토리)
-│   │   │   │
-│   │   │   ├── config/                        # 설정 클래스
-│   │   │   │   ├── RedisConfig.java            (Redis 연결 설정)
-│   │   │   │   ├── S3Config.java               (AWS S3 클라이언트 설정)
-│   │   │   │   ├── KeycloakConfig.java         (Keycloak 통합 설정)
-│   │   │   │   └── SwaggerConfig.java          (API 문서 설정)
-│   │   │   │
-│   │   │   ├── controller/                    # REST 컨트롤러
-│   │   │   │   ├── AuthController.java         (인증 API)
-│   │   │   │   ├── UsersController.java        (사용자 관리 API)
-│   │   │   │   ├── FavoriteCategoryController.java (선호 카테고리 API)
-│   │   │   │   └── ReaderController.java       (독서 관리 API)
-│   │   │   │
-│   │   │   ├── enums/                         # 열거형
-│   │   │   │   └── Role.java                   (사용자 권한: ROLE_USER, ROLE_ADMIN)
-│   │   │   │
-│   │   │   ├── exception/                     # 커스텀 예외
-│   │   │   │   ├── CMissingDataException.java  (404 데이터 미존재)
-│   │   │   │   ├── CDuplicatedDataException.java (409 중복 데이터)
-│   │   │   │   └── CInvalidDataException.java  (400 유효하지 않은 입력)
-│   │   │   │
-│   │   │   ├── model/                         # DTO 및 엔티티
-│   │   │   │   ├── entity/                    # JPA 엔티티
-│   │   │   │   │   ├── Users.java              (사용자 메인 엔티티)
-│   │   │   │   │   ├── FavoriteCategory.java   (선호 카테고리 조인 테이블)
-│   │   │   │   │   ├── UserBook.java           (사용자-도서 관계)
-│   │   │   │   │   ├── UserTrading.java        (사용자-거래 관계)
-│   │   │   │   │   └── compositekey/
-│   │   │   │   │       ├── FavoriteCategoryId.java (복합키)
-│   │   │   │   │       ├── UserBookId.java     (복합키)
-│   │   │   │   │       └── UserTradingId.java  (복합키)
-│   │   │   │   └── feigns/                    # Feign DTO
-│   │   │   │       └── NotificationUserDto.java (알림 서비스용 DTO)
-│   │   │   │
-│   │   │   ├── repository/                    # JPA 리포지토리
-│   │   │   │   ├── UsersRepository.java        (사용자 데이터 접근)
-│   │   │   │   ├── FavoriteCategoryRepository.java (선호 카테고리 접근)
-│   │   │   │   ├── UserBookRepository.java     (도서 상호작용 접근)
-│   │   │   │   └── UserTradingRepository.java  (거래 이력 접근)
-│   │   │   │
-│   │   │   ├── service/                       # 비즈니스 로직
-│   │   │   │   ├── AuthService.java            (인증 및 토큰 관리)
-│   │   │   │   ├── UsersService.java           (사용자 CRUD)
-│   │   │   │   ├── KeycloakService.java        (Keycloak 통합)
-│   │   │   │   ├── S3Service.java              (AWS S3 파일 업로드)
-│   │   │   │   └── RedisService.java           (Redis 캐싱)
-│   │   │   │
-│   │   │   ├── utils/                         # 유틸리티
-│   │   │   │   ├── JwtUtil.java                (내부 JWT 생성/검증)
-│   │   │   │   └── KeycloakJwtUtil.java        (Keycloak JWT 검증)
-│   │   │   │
-│   │   │   └── RebookUserServiceApplication.java (메인 애플리케이션)
-│   │   │
-│   │   └── resources/
-│   │       ├── application.yaml               (Spring Cloud Config 연동)
-│   │       ├── application-dev.yaml           (개발 환경 설정)
-│   │       └── application-prod.yaml          (운영 환경 설정)
-│   │
-│   └── test/
-│       └── java/com/example/rebookuserservice/
-│           └── (테스트 클래스들)
+rebook-user/
+├── src/main/java/com/example/rebookuserservice/
+│   ├── controller/       # REST API 엔드포인트
+│   ├── service/          # 비즈니스 로직 (인증, 사용자 관리)
+│   ├── repository/       # JPA 데이터 접근 계층
+│   ├── model/            # Entity, DTO, Feign 객체
+│   ├── clients/          # OpenFeign 클라이언트 (Notification Service)
+│   ├── config/           # Redis, S3, Keycloak, Swagger 설정
+│   ├── enums/            # 사용자 권한 enum
+│   ├── exception/        # 커스텀 예외
+│   ├── advice/           # 전역 예외 처리
+│   ├── common/           # 공통 응답 모델
+│   └── utils/            # JWT, Keycloak 유틸리티
 │
-├── build.gradle                               # Gradle 빌드 설정
-├── Dockerfile                                 # Docker 이미지 빌드 설정
-└── README.md                                  # 프로젝트 문서 (본 파일)
+├── src/main/resources/
+│   ├── application.yaml         # Spring Cloud Config 연동
+│   ├── application-dev.yaml     # 개발 환경 설정
+│   └── application-prod.yaml    # 운영 환경 설정
+│
+├── build.gradle
+├── Dockerfile
+└── README.md
 ```

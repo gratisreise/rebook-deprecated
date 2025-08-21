@@ -36,12 +36,10 @@
 
 ## 2. 목차
 
-- [1. 개요](#1-개요)
-- [2. 목차](#2-목차)
-- [3. 주요 기능](#3-주요-기능)
-- [4. 기술 스택](#4-기술-스택)
-- [5. 아키텍처](#5-아키텍처)
-- [6. 프로젝트 구조](#6-프로젝트-구조)
+- [주요 기능](#3-주요-기능)
+- [기술 스택](#4-기술-스택)
+- [아키텍처](#5-아키텍처)
+- [프로젝트 구조](#6-프로젝트-구조)
 
 ---
 
@@ -251,100 +249,22 @@ Client Request
 | **CustomFilter.java** | 글로벌 인증 필터 | JWT 검증 및 사용자 컨텍스트 주입 (Order: -10) |
 | **JwtUtil.java** | JWT 유틸리티 | 토큰 파싱, 서명 검증, 사용자 ID 추출 |
 | **SecurityConfig.java** | 보안 설정 | 화이트리스트 관리, CORS 정책, CSRF 비활성화 |
-| **application.yaml** | 기본 설정 | 공통 설정 및 프로파일 분기 |
-| **application-dev.yaml** | 개발 환경 설정 | Dev 환경 Eureka, CORS, Actuator 설정 |
-| **application-prod.yaml** | 운영 환경 설정 | Prod 환경 보안 강화 설정 |
 
 
 ```
 rebook-gateway/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/rebookgateway/
-│   │   │   ├── RebookGatewayApplication.java  # 메인 애플리케이션
-│   │   │   │   └── @SpringBootApplication
-│   │   │   │   └── Spring Boot 진입점
-│   │   │   │
-│   │   │   ├── CustomFilter.java              # 글로벌 인증 필터
-│   │   │   │   ├── @Component
-│   │   │   │   ├── implements GlobalFilter, Ordered
-│   │   │   │   ├── Order: -10 (최우선 실행)
-│   │   │   │   ├── JWT 토큰 추출 (Header/Query)
-│   │   │   │   ├── 화이트리스트 체크
-│   │   │   │   ├── JwtUtil 토큰 검증 호출
-│   │   │   │   └── X-User-Id 헤더 주입
-│   │   │   │
-│   │   │   ├── JwtUtil.java                   # JWT 검증 유틸리티
-│   │   │   │   ├── @Component
-│   │   │   │   ├── @Value("${jwt.secret}")
-│   │   │   │   ├── validateToken(String token)
-│   │   │   │   │   ├── JWT 파싱 (Jwts.parserBuilder)
-│   │   │   │   │   ├── HMAC-SHA 서명 검증
-│   │   │   │   │   └── 만료 시간 확인
-│   │   │   │   └── getUserId(String token)
-│   │   │   │       └── Subject claim 추출
-│   │   │   │
-│   │   │   └── SecurityConfig.java            # Spring Security 설정
-│   │   │       ├── @Configuration
-│   │   │       ├── @EnableWebFluxSecurity
-│   │   │       ├── WHITE_LIST 정의
-│   │   │       │   ├── /actuator/** (헬스체크)
-│   │   │       │   ├── /eureka/** (디스커버리)
-│   │   │       │   ├── /swagger-ui/** (API 문서)
-│   │   │       │   └── /api/** (CustomFilter에서 인증)
-│   │   │       ├── CSRF 비활성화
-│   │   │       └── ServerHttpSecurity 반응형 설정
-│   │   │
-│   │   └── resources/
-│   │       ├── application.yaml               # 공통 설정
-│   │       │   ├── spring.application.name: rebook-gateway
-│   │       │   ├── server.port: 8080
-│   │       │   ├── spring.profiles.active: prod
-│   │       │   └── jwt.secret: ${JWT_SECRET}
-│   │       │
-│   │       ├── application-dev.yaml           # 개발 환경 설정
-│   │       │   ├── eureka.client.service-url
-│   │       │   │   └── defaultZone: http://rebook-eureka:8761/eureka/
-│   │       │   ├── spring.cloud.gateway.globalcors
-│   │       │   │   ├── allowed-origins: localhost:5173
-│   │       │   │   ├── allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
-│   │       │   │   └── allow-credentials: true
-│   │       │   ├── spring.cloud.gateway.routes
-│   │       │   │   ├── user-service (lb://USER-SERVICE)
-│   │       │   │   ├── book-service (lb://BOOK-SERVICE)
-│   │       │   │   ├── trading-service (lb://TRADING-SERVICE)
-│   │       │   │   ├── notification-service (lb://NOTIFICATION-SERVICE)
-│   │       │   │   └── chat-service (lb://CHAT-SERVICE, lb:ws://)
-│   │       │   └── management.endpoints.web.exposure.include: "*"
-│   │       │
-│   │       └── application-prod.yaml          # 운영 환경 설정
-│   │           ├── eureka.client.service-url (동일)
-│   │           ├── spring.cloud.gateway.globalcors
-│   │           │   ├── allowed-origins: https://rebookk.click
-│   │           │   └── 기타 설정 (개발환경과 동일)
-│   │           ├── spring.cloud.gateway.routes (동일)
-│   │           └── management.endpoints.web.exposure.include
-│   │               └── health, info, prometheus (제한적)
-│   │
-│   └── test/
-│       └── java/                               # 테스트 클래스 (추가 예정)
-│           └── com/example/rebookgateway/
-│               └── RebookGatewayApplicationTests.java
+├── src/main/java/com/example/rebookgateway/
+│   ├── RebookGatewayApplication.java    # 메인 애플리케이션
+│   ├── CustomFilter.java                # JWT 검증 및 X-User-Id 헤더 주입
+│   ├── JwtUtil.java                     # JWT 토큰 파싱 및 검증
+│   └── SecurityConfig.java              # 화이트리스트, CORS 설정
 │
-├── build.gradle                               # Gradle 빌드 설정
-│   ├── Spring Boot 3.3.13
-│   ├── Spring Cloud 2023.0.5
-│   ├── Spring Cloud Gateway
-│   ├── Eureka Client
-│   ├── Spring Security (Reactive)
-│   ├── JWT (jjwt 0.12.6)
-│   ├── Actuator + Prometheus
-│   └── Sentry BOM 8.13.2
+├── src/main/resources/
+│   ├── application.yaml                 # Spring Cloud Config 연동
+│   ├── application-dev.yaml             # 개발 환경 설정
+│   └── application-prod.yaml            # 운영 환경 설정
 │
-├── Dockerfile                                 # Docker 이미지 빌드
-│   ├── Builder: gradle:8.14.2-jdk17
-│   ├── Runtime: gcr.io/distroless/java17-debian11
-│   └── Multi-stage build
-│
-└── README.md                                  # 프로젝트 문서 (본 파일)
+├── build.gradle
+├── Dockerfile
+└── README.md
 ```

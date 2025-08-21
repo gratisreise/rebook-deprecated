@@ -37,15 +37,11 @@ WebSocket/STOMP 기반 실시간 메시징과 알림 발행을 담당하는 핵�
 ---
 
 ## 2. 목차
-
-- [1. 개요](#1-개요)
-- [2. 목차](#2-목차)
-- [3. 주요 기능](#3-주요-기능)
-- [4. 기술 스택](#4-기술-스택)
-- [5. 아키텍처](#5-아키텍처)
-- [6. API 문서](#6-api-문서)
-- [7. 프로젝트 구조](#7-프로젝트-구조)
-- [8. 기술적 특징 및 고려사항](#8-기술적-특징-및-고려사항)
+- [주요 기능](#3-주요-기능)
+- [기술 스택](#4-기술-스택)
+- [아키텍처](#5-아키텍처)
+- [API 문서](#6-api-문서)
+- [프로젝트 구조](#7-프로젝트-구조)
 
 ---
 
@@ -334,96 +330,19 @@ SockJS Endpoint: /ws-chat (with fallback)
 
 ## 7. 프로젝트 구조
 
-### 주요 디렉토리 설명
-
-| 디렉토리 | 역할 | 주요 기능 |
-|---------|------|----------|
-| **advice/** | 전역 예외 처리 | `@RestControllerAdvice`로 모든 컨트롤러 예외 통합 핸들링 |
-| **common/** | 응답 표준화 | 통일된 API 응답 구조 제공 (`CommonResult`, `SingleResult`, `PageResponse`) |
-| **config/** | 인프라 설정 | WebSocket, RabbitMQ, MongoDB, JPA Auditing 등 외부 서비스 연동 설정 |
-| **controller/** | REST API & WebSocket | REST 엔드포인트 및 STOMP 메시지 핸들러 정의, Swagger 문서화 |
-| **exception/** | 커스텀 예외 | 도메인별 예외 클래스 (404, 409, 400) |
-| **model/entity/** | 도메인 모델 | JPA 엔티티 (PostgreSQL), MongoDB 문서, 복합키 정의 |
-| **model/** (DTO) | 데이터 전송 | 요청/응답 DTO 및 메시징 메시지 |
-| **repository/** | 데이터 접근 | Spring Data JPA 리포지토리 (PostgreSQL), MongoDB 리포지토리 |
-| **service/** | 비즈니스 로직 | 트랜잭션 관리, 권한 검증, 메시지 처리, 읽기/쓰기 분리 |
-| **utils/** | 유틸리티 | 알림 발행, 공통 헬퍼 함수 |
-
-
 ```
-rebook-chat-service/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/rebookchatservice/
-│   │   │   ├── advice/                        # 전역 예외 처리
-│   │   │   │   └── GlobalExceptionHandler.java  (RestControllerAdvice)
-│   │   │   │
-│   │   │   ├── common/                        # 공통 응답 모델
-│   │   │   │   ├── CommonResult.java           (기본 성공 응답)
-│   │   │   │   ├── SingleResult.java           (단일 데이터 응답)
-│   │   │   │   ├── ListResult.java             (리스트 응답)
-│   │   │   │   ├── PageResponse.java           (페이지네이션 응답)
-│   │   │   │   ├── ResponseService.java        (응답 래핑 팩토리)
-│   │   │   │   └── ResultCode.java             (응답 코드 상수)
-│   │   │   │
-│   │   │   ├── config/                        # 설정 클래스
-│   │   │   │   ├── WebSocketConfig.java        (WebSocket 및 STOMP 설정)
-│   │   │   │   ├── RabbitConfig.java           (RabbitMQ 설정)
-│   │   │   │   └── SwaggerConfig.java          (Swagger/OpenAPI 설정)
-│   │   │   │
-│   │   │   ├── controller/                    # REST 컨트롤러 & WebSocket 핸들러
-│   │   │   │   ├── ChatMessageController.java  (메시지 전송/조회, STOMP 핸들러)
-│   │   │   │   ├── ChatRoomController.java     (채팅방 CRUD)
-│   │   │   │   ├── ChatReadStatusController.java (읽음 상태 관리)
-│   │   │   │   └── TestController.java         (테스트 컨트롤러)
-│   │   │   │
-│   │   │   ├── exception/                     # 커스텀 예외
-│   │   │   │   ├── CMissingDataException.java  (404 데이터 미존재)
-│   │   │   │   ├── CDuplicatedDataException.java (409 중복 데이터)
-│   │   │   │   └── CInvalidDataException.java  (400 유효하지 않은 입력)
-│   │   │   │
-│   │   │   ├── model/                         # DTO 및 엔티티
-│   │   │   │   ├── entity/                    # JPA 엔티티 & MongoDB 문서
-│   │   │   │   │   ├── ChatRoom.java          (채팅방 메인 엔티티)
-│   │   │   │   │   ├── ChatMessage.java       (메시지 MongoDB 문서)
-│   │   │   │   │   ├── ChatReadStatus.java    (읽음 상태 엔티티)
-│   │   │   │   │   └── compositekey/
-│   │   │   │   │       └── ChatReadStatusId.java (복합키 클래스)
-│   │   │   │   ├── message/                   # 메시징 DTO
-│   │   │   │   │   └── NotificationChatMessage.java (알림 메시지)
-│   │   │   │   ├── ChatMessageRequest.java    (메시지 요청 DTO)
-│   │   │   │   ├── ChatMessageResponse.java   (메시지 응답 DTO)
-│   │   │   │   ├── ChatRoomRequest.java       (채팅방 요청 DTO)
-│   │   │   │   └── ChatRoomResponse.java      (채팅방 응답 DTO)
-│   │   │   │
-│   │   │   ├── repository/                    # 데이터 접근 레이어
-│   │   │   │   ├── ChatMessageRepository.java  (MongoDB 메시지 저장소)
-│   │   │   │   ├── ChatRoomRepository.java     (PostgreSQL 채팅방 저장소)
-│   │   │   │   └── ChatReadStatusRepository.java (PostgreSQL 읽음 상태 저장소)
-│   │   │   │
-│   │   │   ├── service/                       # 비즈니스 로직
-│   │   │   │   ├── ChatMessageService.java     (메시지 생성/전송)
-│   │   │   │   ├── ChatRoomService.java        (채팅방 생성/수정/삭제)
-│   │   │   │   ├── ChatReadStatusService.java  (읽음 상태 관리)
-│   │   │   │   ├── ChatMessageReader.java      (메시지 조회 전용)
-│   │   │   │   ├── ChatRoomReader.java         (채팅방 조회 전용)
-│   │   │   │   └── ChatReadStatusReader.java   (읽음 상태 조회 전용)
-│   │   │   │
-│   │   │   ├── utils/                         # 유틸리티
-│   │   │   │   └── NotificationPublisher.java  (RabbitMQ 메시지 발행)
-│   │   │   │
-│   │   │   └── RebookChatServiceApplication.java (메인 애플리케이션)
-│   │   │
-│   │   └── resources/
-│   │       ├── application.yaml               (Spring Cloud Config 연동)
-│   │       ├── application-dev.yaml           (개발 환경 설정)
-│   │       └── application-prod.yaml          (운영 환경 설정)
-│   │
-│   └── test/
-│       └── java/com/example/rebookchatservice/
-│           └── (테스트 클래스들)
+rebook-chat/
+├── src/main/java/com/example/rebookchatservice/
+│   ├── controller/       # REST API & WebSocket 엔드포인트
+│   ├── service/          # 비즈니스 로직 (Service/Reader 패턴)
+│   ├── repository/       # JPA/MongoDB 데이터 접근 계층
+│   ├── model/            # Entity, DTO, Message 객체
+│   ├── config/           # WebSocket, RabbitMQ, Swagger 설정
+│   ├── exception/        # 커스텀 예외
+│   ├── advice/           # 전역 예외 처리
+│   ├── common/           # 공통 응답 모델
+│   └── utils/            # 알림 발행 유틸리티
 │
-├── build.gradle                               # Gradle 빌드 설정
-├── Dockerfile                                 # Docker 이미지 빌드 설정
-└── README.md                                  # 프로젝트 문서 (본 파일)
+└── src/main/resources/
+    └── application*.yaml # Spring Cloud Config 연동
 ```

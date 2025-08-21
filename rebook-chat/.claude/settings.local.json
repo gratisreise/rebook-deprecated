@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/junghokim/Desktop/rebook/rebook/rebook-book/**)",
+      "Read(//Users/junghokim/Desktop/rebook/rebook/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

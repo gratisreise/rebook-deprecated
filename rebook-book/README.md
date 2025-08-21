@@ -39,13 +39,11 @@
 
 ## 2. 목차
 
-- [1. 개요](#1-개요)
-- [2. 목차](#2-목차)
-- [3. 주요 기능](#3-주요-기능)
-- [4. 기술 스택](#4-기술-스택)
-- [5. 아키텍처](#5-아키텍처)
-- [6. API 문서](#6-api-문서)
-- [7. 프로젝트 구조](#7-프로젝트-구조)
+- [주요 기능](#3-주요-기능)
+- [기술 스택](#4-기술-스택)
+- [아키텍처](#5-아키텍처)
+- [API 문서](#6-api-문서)
+- [프로젝트 구조](#7-프로젝트-구조)
 
 ---
 
@@ -306,89 +304,28 @@ https://api.rebookcloak.click/webjars/swagger-ui/index.html?urls.primaryName=reb
 
 ```
 rebook-book-service/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/rebookbookservice/
-│   │   │   ├── advice/                        # 전역 예외 처리
-│   │   │   │   └── GlobalExceptionHandler.java  (RestControllerAdvice)
-│   │   │   │
-│   │   │   ├── common/                        # 공통 응답 모델
-│   │   │   │   ├── CommonResult.java           (기본 성공 응답)
-│   │   │   │   ├── SingleResult.java           (단일 데이터 응답)
-│   │   │   │   ├── ListResult.java             (리스트 응답)
-│   │   │   │   ├── ResponseService.java        (응답 래핑 팩토리)
-│   │   │   │   └── ResultCode.java             (응답 코드 상수)
-│   │   │   │
-│   │   │   ├── config/                        # 설정 클래스
-│   │   │   │   ├── RabbitConfig.java           (RabbitMQ 메시징 설정)
-│   │   │   │   └── SwaggerConfig.java          (SpringDoc OpenAPI 설정)
-│   │   │   │
-│   │   │   ├── controller/                    # REST 컨트롤러
-│   │   │   │   ├── BookController.java         (도서 CRUD 및 조회, 추천)
-│   │   │   │   ├── BookReviewController.java   (리뷰 CRUD)
-│   │   │   │   ├── BookMarkController.java     (북마크 관리)
-│   │   │   │   └── ReaderController.java       (내부 서비스 통신용)
-│   │   │   │
-│   │   │   ├── exception/                     # 커스텀 예외
-│   │   │   │   ├── CMissingDataException.java  (404 데이터 미존재)
-│   │   │   │   ├── CDuplicatedDataException.java (409 중복 데이터)
-│   │   │   │   ├── CUnauthorizedException.java (403 권한 없음)
-│   │   │   │   └── CInvalidDataException.java  (400 유효하지 않은 입력)
-│   │   │   │
-│   │   │   ├── feigns/                        # Feign 클라이언트
-│   │   │   │   ├── NaverClient.java            (Naver Books API)
-│   │   │   │   └── UserClient.java             (User Service)
-│   │   │   │
-│   │   │   ├── model/                         # DTO 및 도메인 객체
-│   │   │   │   ├── BookRequest.java            (도서 등록 요청 DTO)
-│   │   │   │   ├── BookResponse.java           (도서 응답 DTO)
-│   │   │   │   ├── BookReviewRequest.java      (리뷰 요청 DTO)
-│   │   │   │   ├── BookReviewResponse.java     (리뷰 응답 DTO)
-│   │   │   │   ├── entity/                     # JPA 엔티티
-│   │   │   │   │   ├── Book.java              (도서 엔티티)
-│   │   │   │   │   ├── BookReview.java        (리뷰 엔티티)
-│   │   │   │   │   ├── BookMark.java          (북마크 엔티티)
-│   │   │   │   │   └── compositekey/
-│   │   │   │   │       └── BookMarkId.java    (북마크 복합키)
-│   │   │   │   ├── naver/                     # Naver API 모델
-│   │   │   │   │   ├── NaverBooksResponse.java (검색 응답)
-│   │   │   │   │   └── Item.java              (도서 아이템)
-│   │   │   │   ├── user/                      # User Service 연동 모델
-│   │   │   │   │   ├── UserResponse.java      (사용자 정보)
-│   │   │   │   │   ├── AuthorsRequest.java    (작성자 요청)
-│   │   │   │   │   └── AuthorsResponse.java   (작성자 응답)
-│   │   │   │   └── message/                   # 메시징 DTO
-│   │   │   │       └── NotificationBookMessage.java (도서 알림)
-│   │   │   │
-│   │   │   ├── repository/                    # JPA 리포지토리
-│   │   │   │   ├── BookRepository.java         (도서 데이터 접근)
-│   │   │   │   ├── BookReviewRepository.java   (리뷰 데이터 접근)
-│   │   │   │   └── BookMarkRepository.java     (북마크 데이터 접근)
-│   │   │   │
-│   │   │   ├── service/                       # 비즈니스 로직
-│   │   │   │   ├── BookService.java            (도서 생성, 검색, 추천)
-│   │   │   │   ├── BookReader.java             (도서 조회 전용)
-│   │   │   │   ├── BookReviewService.java      (리뷰 CRUD)
-│   │   │   │   ├── BookReviewReader.java       (리뷰 조회 전용)
-│   │   │   │   ├── BookMarkService.java        (북마크 토글 및 조회)
-│   │   │   │   └── ApiService.java             (Naver API, Gemini AI 통합)
-│   │   │   │
-│   │   │   ├── utils/                         # 유틸리티
-│   │   │   │   └── NotificationPublisher.java  (RabbitMQ 메시지 발행)
-│   │   │   │
-│   │   │   └── RebookBookServiceApplication.java (메인 애플리케이션)
-│   │   │
-│   │   └── resources/
-│   │       ├── application.yaml               (Spring Cloud Config 연동)
-│   │       ├── application-dev.yaml           (개발 환경 설정)
-│   │       └── application-prod.yaml          (운영 환경 설정)
-│   │
-│   └── test/
-│       └── java/com/example/rebookbookservice/
-│           └── (테스트 클래스들)
+├── src/main/java/com/example/rebookbookservice/
+│   ├── advice/                  # 전역 예외 처리
+│   ├── common/                  # 공통 응답 모델
+│   ├── config/                  # RabbitMQ, Swagger 설정
+│   ├── controller/              # REST API 엔드포인트
+│   ├── exception/               # 커스텀 예외 클래스
+│   ├── feigns/                  # Naver API, User Service 연동
+│   ├── model/
+│   │   ├── entity/              # Book, BookReview, BookMark
+│   │   ├── naver/               # Naver API DTO
+│   │   ├── user/                # User Service DTO
+│   │   └── message/             # RabbitMQ 메시지 DTO
+│   ├── repository/              # JPA 리포지토리
+│   ├── service/                 # 비즈니스 로직 (Service/Reader 패턴)
+│   └── utils/                   # 메시지 발행 유틸리티
 │
-├── build.gradle                               # Gradle 빌드 설정
-├── Dockerfile                                 # Docker 이미지 빌드 설정
-├── CLAUDE.md                                  # Claude Code 가이드
-└── README.md                                  # 프로젝트 문서 (본 파일)
+├── src/main/resources/
+│   ├── application.yaml         # Spring Cloud Config 연동
+│   ├── application-dev.yaml     # 개발 환경 설정
+│   └── application-prod.yaml    # 운영 환경 설정
+│
+├── build.gradle
+├── Dockerfile
+└── README.md
 ```
