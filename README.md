@@ -6,6 +6,7 @@
 [![Gradle](https://img.shields.io/badge/Gradle-8.14.2-02303A?style=flat&logo=gradle)](https://gradle.org/)
 
 Rebook은 Spring Cloud 기반 마이크로서비스 아키텍처로 구축된 중고책 거래 플랫폼입니다. 도서 검색, 리뷰, 거래, 실시간 채팅 등의 기능을 제공합니다.
+- [Rebook사이트]( https://rebookk.click)
 
 ## 📚 목차
 
