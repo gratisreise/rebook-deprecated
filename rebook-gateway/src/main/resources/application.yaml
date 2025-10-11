@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  send-default-pii: true
+
+jwt:
+  secret: ${JWT_SECRET}
+
+spring:
+  application:
+    name: rebook-gateway
+
+  profiles:
+    active: prod
