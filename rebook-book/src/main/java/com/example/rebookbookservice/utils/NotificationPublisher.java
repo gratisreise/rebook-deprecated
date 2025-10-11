@@ -1,0 +1,25 @@
+package com.example.rebookbookservice.utils;
+
+
+import com.example.rebookbookservice.model.message.NotificationBookMessage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class NotificationPublisher {
+
+    private final AmqpTemplate amqpTemplate;
+
+    @Value("${notification.exchange}")
+    private String exchange;
+
+    @Value("${notification.routing-key}")
+    private String routingKey;
+
+    public void sendNotification(NotificationBookMessage message) {
+        amqpTemplate.convertAndSend(exchange, routingKey, message);
+    }
+}
