@@ -27,6 +27,10 @@ public class CustomFilter implements GlobalFilter, Ordered {
         if (uri.contains("/api/auths")) {
             return chain.filter(exchange);
         }
+        if(uri.contains("/swagger-ui") || uri.contains("/v3/api-docs") || uri.contains("/swagger-resources")){
+            return chain.filter(exchange);
+        }
+
         if(uri.contains("/api/ws-chat")){
             return webSocketConnect(exchange, chain);
         }
