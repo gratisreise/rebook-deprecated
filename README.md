@@ -179,11 +179,15 @@ rebook/
 
 각 서비스는 Swagger UI를 통해 API 문서를 제공합니다:
 
+**로컬 개발 환경**:
 - **User Service**: http://localhost:9000/swagger-ui.html
 - **Book Service**: http://localhost:9001/swagger-ui.html
 - **Trading Service**: http://localhost:9002/swagger-ui.html
 - **Chat Service**: http://localhost:9003/swagger-ui.html
 - **Notification Service**: http://localhost:9004/swagger-ui.html
+
+**운영 환경**:
+- **통합 API 문서**: https://api.rebookcloak.click/swagger-ui/index.html
 
 > **참고**: Swagger UI는 개발 환경에서만 활성화됩니다.
 
@@ -232,6 +236,7 @@ export GEMINI_API_KEY=your-gemini-api-key
 
 ### 헬스 체크
 
+**로컬 개발 환경**:
 ```bash
 # 전체 서비스 상태 확인
 curl http://localhost:8761  # Eureka Dashboard
@@ -242,12 +247,19 @@ curl http://localhost:9000/actuator/health  # User Service
 curl http://localhost:9001/actuator/health  # Book Service
 ```
 
-### 메트릭 수집
+**운영 환경**:
+- **헬스 체크**: https://api.rebookcloak.click/metrics/query
 
+### 메트릭 수집 및 시각화
+
+**로컬 개발 환경**:
 ```bash
 # Prometheus 메트릭
 curl http://localhost:9000/actuator/prometheus
 ```
+
+**운영 환경**:
+- **Grafana 모니터링 대시보드**: https://api.rebookcloak.click/grafana/login
 
 ## 🛡️ 보안
 
