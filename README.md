@@ -8,18 +8,20 @@
 Rebook은 Spring Cloud 기반 마이크로서비스 아키텍처로 구축된 중고책 거래 플랫폼입니다. 도서 검색, 리뷰, 거래, 실시간 채팅 등의 기능을 제공합니다.
 - [Rebook사이트]( https://rebookk.click)
 
-## 📚 목차
+## 목차
 
-- [시스템 아키텍처](#시스템-아키텍처)
-- [마이크로서비스 구성](#마이크로서비스-구성)
-- [기술 스택](#기술-스택)
-- [시작하기](#시작하기)
+- [시스템 아키텍처](#1-시스템-아키텍처)
+- [마이크로서비스 구성](#2-마이크로서비스-구성)
+- [기술 스택](#3-기술-스택)
+- [개발 가이드](#4-개발-가이드)
+- [모니터링](#5-모니터링)
+- [보안](#6-보안)
 
-## 🏗 시스템 아키텍처
+## 1. 시스템 아키텍처
 ### 소프트웨어 아키텍쳐
 ![소프트웨어아키텍쳐](https://rebook-bucket.s3.ap-northeast-2.amazonaws.com/rebook/software_architecture.png)
 
-## 🎯 마이크로서비스 구성
+## 2. 마이크로서비스 구성
 
 ### 인프라 서비스
 
@@ -45,7 +47,7 @@ Rebook은 Spring Cloud 기반 마이크로서비스 아키텍처로 구축된 �
 |--------|------|-----------|
 | **Config Repository** | Spring Cloud Config 서버가 사용하는 중앙 집중식 설정 파일 저장소 | [📖 상세보기](./rebook-yamls/README.md) |
 
-## 🛠 기술 스택
+## 3. 기술 스택
 
 ### Backend Framework
 - **Java 17** - 최신 LTS 버전
@@ -81,7 +83,7 @@ Rebook은 Spring Cloud 기반 마이크로서비스 아키텍처로 구축된 �
 - **Sentry** - 에러 추적 및 로깅
 
 
-## 💻 개발 가이드
+## 4. 개발 가이드
 
 ### 프로젝트 구조
 
@@ -124,7 +126,7 @@ rebook/
 - [**설정 관리 가이드**](./rebook-yamls/README.md)
 - [**API 게이트웨이 가이드**](./rebook-gateway/README.md)
 
-## 📊 모니터링
+## 5. 모니터링
 
 ### 헬스 체크
 
@@ -155,7 +157,7 @@ curl http://localhost:3000
 - [Grafana 모니터링 대시보드](https://api.rebookcloak.click/grafana/goto/PToXkaeHg?orgId=1)
 - ID:admin/PW:admin1234
 
-## 🛡️ 보안
+## 6. 보안
 
 - JWT 기반 인증 (Gateway에서 검증)
 - 운영 환경 설정 암호화 (`{cipher}` 프리픽스)
